@@ -1,0 +1,16 @@
+# Run with `dart run ffigen --config ffigen.yaml`.
+name: BuildfirefightdataBindings
+description: |
+  Bindings for `src/buildfirefightdata.h`.
+
+  Regenerate bindings with `dart run ffigen --config ffigen.yaml`.
+output: 'lib/buildfirefightdata_bindings_generated.dart'
+headers:
+  entry-points:
+    - 'src/buildfirefightdata.h'
+  include-directives:
+    - 'src/buildfirefightdata.h'
+ffi-native:
+comments:
+  style: any
+  length: full
