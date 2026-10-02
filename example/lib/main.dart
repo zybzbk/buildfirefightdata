@@ -1,3 +1,7 @@
+import 'dart:ffi';
+
+import 'package:xml/xml.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -494,6 +498,46 @@ class _MyHomePageState extends State<MyHomePage>
 
   List<AmmoData> ammoList = []; //弹药数据列表初始化
 
+  String selectedCountry = '';
+
+  Map<String, bool> countries = {
+    '美国': false,
+    '加拿大': false,
+    '英国': false,
+    '俄罗斯': false,
+    '乌克兰': false,
+    '德国': false,
+    '波兰': false,
+    '芬兰': false,
+    '法国': false,
+    '匈牙利': false,
+    '格鲁吉亚': false,
+    '意大利': false,
+    '罗马尼亚': false,
+    '奥地利': false,
+    '比利时': false,
+    '荷兰': false,
+    '以色列': false,
+    '约旦': false,
+    '科威特': false,
+    '伊拉克': false,
+    '埃及': false,
+    '伊朗': false,
+    '叙利亚': false,
+    '印度': false,
+    '巴基斯坦': false,
+    '亚美尼亚': false,
+    '阿塞拜疆': false,
+    '土耳其': false,
+    '日本': false,
+    '韩国': false,
+    '南越': false,
+    '中国': false,
+    '朝鲜': false,
+    '北越': false,
+    '澳大利亚': false,
+  };
+
   Future<void> addAmmo() async {
     AmmoData result = await showDialog(
       context: context,
@@ -523,6 +567,20 @@ class _MyHomePageState extends State<MyHomePage>
     });
   }
 
+  Future<void> removeAmmo() async {
+    int selectedIndex = 0;
+    for (var i = 0; i < ammoList.length; i++) {
+      if (ammoList[i].isSelected == true) {
+        selectedIndex = i;
+        break;
+      }
+    }
+    if (ammoList.isEmpty) return;
+    setState(() {
+      ammoList.removeAt(selectedIndex);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -533,6 +591,10 @@ class _MyHomePageState extends State<MyHomePage>
   //叠叠乐这一块
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: Icon(Icons.check),
+      ),
       appBar: AppBar(
         title: Text("数据编辑器"),
         bottom: TabBar(controller: tabController, tabs: [Text("武器")]),
@@ -718,6 +780,12 @@ class _MyHomePageState extends State<MyHomePage>
                       },
                       child: Icon(Icons.add),
                     ),
+                    OutlinedButton(
+                      onPressed: () {
+                        removeAmmo();
+                      },
+                      child: Icon(Icons.remove),
+                    ),
                   ],
                 ),
                 Row(
@@ -740,6 +808,14 @@ class _MyHomePageState extends State<MyHomePage>
                                 }
                                 ammo.isSelected = true;
                               });
+                            },
+                            onLongPress: () {
+                              setState(() {
+                                for (var e in ammoList) {
+                                  e.isSelected = false;
+                                }
+                                ammo.isSelected = true;
+                              });
                               editAmmo();
                             },
                             cells: [
@@ -747,6 +823,23 @@ class _MyHomePageState extends State<MyHomePage>
                               DataCell(Text("${ammo.ammo.speed}")),
                               DataCell(Text("${ammo.ammo.mass}")),
                               DataCell(Text("${ammo.ammo.heMass}")),
+                            ],
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        children: countries.entries.map((i) {
+                          return Row(
+                            children: [
+                              Checkbox(
+                                value: countries[i.key],
+                                onChanged: (newValue) {
+                                  countries[i.key] = newValue ?? false;
+                                },
+                              ),
+                              Text(i.key),
                             ],
                           );
                         }).toList(),
